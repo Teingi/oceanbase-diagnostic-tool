@@ -1,0 +1,49 @@
+###
+# This workflow is used for build
+###
+
+name: Build
+run-name: Build triggered by ${{ github.actor }}
+
+jobs:
+  build-tar:
+    name: Build tar (x86_64)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+      - name: Set up Python2.7
+        uses: actions/setup-python@v4
+        id: setup-python2
+        with:
+          python-version: 2.7
+          update-environment: false
+      - name: Setup env
+        run: |
+          echo "Current directory: "`pwd`
+          yum clean all
+          yum install -y gcc libffi-devel python-devel xz-devel mysql-devel libaio-devel mysql make wget vim rpm-build rpmdevtools tree
+          yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
+          yum install gcc -y
+          curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+          python get-pip.py
+          yum install -y python3-pip
+          pip install --default-timeout=1000 setuptools-rust && pip3 install --default-timeout=1000 setuptools-rust
+          
+      - name: Build tar
+        run: |
+          echo "Start build tar"
+          echo "Current directory: "`pwd`
+          bash ./build/build.sh
+          
+      - name: Upload jar
+        uses: actions/upload-artifact@v3
+        with:
+          name: oceanbase-diagnostic-tool-tar
+          path: build/*.tar
