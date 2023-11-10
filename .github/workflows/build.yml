@@ -14,6 +14,8 @@ jobs:
   build-tar:
     name: Build tar (x86_64)
     runs-on: ubuntu-latest
+    container:
+      image: "centos:7"
     steps:
       - name: Checkout workspace
         uses: actions/checkout@v3
