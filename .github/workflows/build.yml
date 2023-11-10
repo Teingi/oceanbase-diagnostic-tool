@@ -5,6 +5,11 @@
 name: Build
 run-name: Build triggered by ${{ github.actor }}
 
+on:
+  push:
+    branches:
+    - '*'
+
 jobs:
   build-tar:
     name: Build tar (x86_64)
