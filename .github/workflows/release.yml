@@ -1,8 +1,9 @@
 name: Release Build RPM and DEB Packages
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - '*'
 
 jobs:
   build-and-package-x86_64:
@@ -39,24 +40,20 @@ jobs:
           mkdir -p /home/runner/artifacts
           fakeroot alien --scripts --to-deb /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
 
-      - name: Check if Release exists
-        id: check_release
-        run: |
-          TAG_NAME=$(git describe --tags --abbrev=0)
-          RELEASE_EXISTS=$(curl --silent --output /dev/null --head --write-out '%{http_code}' -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/tags/$TAG_NAME")
-          echo ::set-output name=release_exists::${RELEASE_EXISTS}
+      - name: Get the version from the tag
+        id: get_version
+        run: echo ::set-output name=version::${GITHUB_REF#refs/tags/v}
 
-      - name: Create GitHub Release (if not exists)
-        if: steps.check_release.outputs.release_exists != '200'
+      - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: v${{ steps.get_version.outputs.version }}
           body: |
-            Automated release containing RPM and DEB packages.
+            Automated release containing RPM and DEB packages for version v${{ steps.get_version.outputs.version }}.
           draft: false
           prerelease: false
 
@@ -67,7 +64,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
-          asset_name: oceanbase-diagnostic-tool-$(date +%Y%m%d%H%M).x86_64.rpm
+          asset_name: oceanbase-diagnostic-tool-${{ steps.get_version.outputs.version }}.x86_64.rpm
           asset_content_type: application/octet-stream
 
       - name: Upload DEB package to Release
@@ -77,5 +74,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: /home/runner/work/oceanbase-diagnostic-tool/oceanbase-diagnostic-tool/oceanbase-diagnostic-tool_*.deb
-          asset_name: oceanbase-diagnostic-tool-$(date +%Y%m%d%H%M)_amd64.deb
+          asset_name: oceanbase-diagnostic-tool-${{ steps.get_version.outputs.version }}_amd64.deb
           asset_content_type: application/octet-stream
