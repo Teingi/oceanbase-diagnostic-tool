@@ -1,0 +1,73 @@
+name: Release Build RPM and DEB Packages
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build-and-package-x86_64:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip setuptools wheel
+          pip3 install -r requirements3.txt
+
+      - name: Set up RPM build env
+        run: |
+          sudo apt-get update && sudo apt-get install -y rpm alien fakeroot
+
+      - name: Build package
+        run: |
+          pwd
+          ls -lh
+          export RELEASE=`date +%Y%m%d%H%M`
+          cat ./rpm/oceanbase-diagnostic-tool.spec
+          rpmbuild -bb ./rpm/oceanbase-diagnostic-tool.spec
+
+      - name: Convert RPM to DEB
+        run: |
+          mkdir -p /home/runner/artifacts
+          fakeroot alien --scripts --to-deb /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Automated release containing RPM and DEB packages.
+          draft: false
+          prerelease: false
+
+      - name: Upload RPM package to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
+          asset_name: oceanbase-diagnostic-tool-$(date +%Y%m%d%H%M).x86_64.rpm
+          asset_content_type: application/octet-stream
+
+      - name: Upload DEB package to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /home/runner/work/oceanbase-diagnostic-tool/oceanbase-diagnostic-tool/oceanbase-diagnostic-tool_*.deb
+          asset_name: oceanbase-diagnostic-tool-$(date +%Y%m%d%H%M)_amd64.deb
+          asset_content_type: application/octet-stream
