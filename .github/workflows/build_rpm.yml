@@ -11,6 +11,8 @@ on:
 jobs:
   build-and-package-x86_64:
     runs-on: ubuntu-latest
+    container:
+      image: "centos:7"
 
     steps:
       - name: Checkout code
@@ -32,18 +34,18 @@ jobs:
           sudo apt update
           sudo apt upgrade libc6
 
-      - name: Set glibc
-        run: |
-          mkdir ~/glibc_install; cd ~/glibc_install
-          wget http://ftp.gnu.org/gnu/glibc/glibc-2.35.tar.gz
-          tar zxvf glibc-2.35.tar.gz
-          cd glibc-2.35
-          mkdir build
-          cd build
-          ../configure --prefix=/opt/glibc-2.35
-          make -j4
-          sudo make install
-          export LD_LIBRARY_PATH=/opt/glibc-2.35/lib
+      # - name: Set glibc
+      #   run: |
+      #     mkdir ~/glibc_install; cd ~/glibc_install
+      #     wget http://ftp.gnu.org/gnu/glibc/glibc-2.35.tar.gz
+      #     tar zxvf glibc-2.35.tar.gz
+      #     cd glibc-2.35
+      #     mkdir build
+      #     cd build
+      #     ../configure --prefix=/opt/glibc-2.35
+      #     make -j4
+      #     sudo make install
+      #     export LD_LIBRARY_PATH=/opt/glibc-2.35/lib
 
       - name: Build package
         run: |
