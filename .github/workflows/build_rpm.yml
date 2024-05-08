@@ -21,6 +21,15 @@ jobs:
         with:
           python-version: '3.8'
 
+      - name: Install glibc
+        run: |
+          wget -4c https://ftp.gnu.org/gnu/glibc/glibc-2.29.tar.gz
+          tar -zxvf glibc-2.29.tar.gz
+          cd glibc-2.29
+          ./configure --prefix=/opt/glibc
+          make
+          make install
+
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip setuptools wheel
@@ -49,6 +58,6 @@ jobs:
           name: obdiag-packages
           path: |
             /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
-            /home/runner/work/oceanbase-diagnostic-tool/oceanbase-diagnostic-tool/oceanbase-diagnostic-tool_*.deb
+            /home/runner/work/obdiag/obdiag/oceanbase-diagnostic-tool_*.deb
           retention-days: 3
           debug: true
