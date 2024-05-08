@@ -27,7 +27,7 @@ jobs:
         run: |
           yum install -y wget
           mkdir /glibc_install
-          wget -P /glibc_install http://mirror.example.com/glibc-2.34.tar.gz
+          wget -P /glibc_install http://ftp.gnu.org/gnu/glibc/glibc-2.34.tar.gz
           cd /glibc_install
           tar -xvf glibc-2.34.tar.gz
           cd glibc-2.34
