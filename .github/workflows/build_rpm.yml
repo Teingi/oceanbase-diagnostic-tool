@@ -25,14 +25,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo yum update glibc
+          yum update glibc
           python3 -m pip install --upgrade pip setuptools wheel
           pip3 install -r requirements3.txt
 
       - name: Set up build env
         run: |
-          sudo yum install gcc make perl-ExtUtils-MakeMaker
-          sudo yum install fakeroot
+          yum install gcc make perl-ExtUtils-MakeMaker
+          yum install fakeroot
 
       - name: Build package
         run: |
