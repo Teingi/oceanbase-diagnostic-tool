@@ -10,7 +10,9 @@ on:
 
 jobs:
   build-and-package-x86_64:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    container:
+      image: "centos:7"
 
     steps:
       - name: Checkout code
@@ -21,23 +23,15 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install glibc
-        run: |
-          wget -4c https://ftp.gnu.org/gnu/glibc/glibc-2.29.tar.gz
-          tar -zxvf glibc-2.29.tar.gz
-          cd glibc-2.29
-          ./configure --prefix=/opt/glibc
-          make
-          make install
-
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip setuptools wheel
           pip3 install -r requirements3.txt
 
-      - name: Set up RPM build env
+      - name: Set up build env
         run: |
-          sudo apt-get update && sudo apt-get install -y rpm alien fakeroot
+          sudo yum install gcc make perl-ExtUtils-MakeMaker
+          sudo yum install fakeroot
 
       - name: Build package
         run: |
