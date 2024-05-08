@@ -25,13 +25,14 @@ jobs:
 
       - name: Install glibc
         run: |
-          mkdir /glibc_install && \
-          wget -P /glibc_install http://mirror.example.com/glibc-2.34.tar.gz && \
-          cd /glibc_install && \
-          tar -xvf glibc-2.34.tar.gz && \
-          cd glibc-2.34 && \
-          ./configure --prefix=/usr --disable-profile && \
-          make && \
+          yum install -y wget
+          mkdir /glibc_install
+          wget -P /glibc_install http://mirror.example.com/glibc-2.34.tar.gz
+          cd /glibc_install
+          tar -xvf glibc-2.34.tar.gz
+          cd glibc-2.34
+          ./configure --prefix=/usr --disable-profile
+          make
           make install
 
       - name: Install dependencies
