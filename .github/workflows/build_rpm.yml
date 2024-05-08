@@ -23,21 +23,9 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install glibc
-        run: |
-          yum install -y wget
-          mkdir /glibc_install
-          wget -P /glibc_install http://ftp.gnu.org/gnu/glibc/glibc-2.34.tar.gz
-          cd /glibc_install
-          tar -xvf glibc-2.34.tar.gz
-          cd glibc-2.34
-          ./configure --prefix=/usr --disable-profile
-          make
-          make install
-
       - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip setuptools wheel
+          python3 -m pip install --upgrade pip
           pip3 install -r requirements3.txt
 
       - name: Set up build env
