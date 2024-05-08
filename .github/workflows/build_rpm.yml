@@ -25,6 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo yum update glibc
           python3 -m pip install --upgrade pip setuptools wheel
           pip3 install -r requirements3.txt
 
