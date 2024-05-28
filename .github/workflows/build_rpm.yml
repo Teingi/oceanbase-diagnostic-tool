@@ -28,7 +28,6 @@ jobs:
           python3.8 --version
           ln -sf /usr/local/bin/python3.8 /usr/local/bin/python3
           yum install python3-devel
-          export LD_LIBRARY_PATH=/path/to/python3.8/libs:$LD_LIBRARY_PATH
 
       - name: Install dependencies
         run: |
