@@ -51,6 +51,10 @@ jobs:
           cat ./rpm/oceanbase-diagnostic-tool.spec
           rpmbuild -bb ./rpm/oceanbase-diagnostic-tool.spec
 
+      - name: Find rpm
+        run: |
+          find / -name oceanbase-diagnostic-tool-*.rpm
+
       - name: 'Upload rpm'
         uses: actions/upload-artifact@v3
         with:
@@ -87,7 +91,7 @@ jobs:
         run: alien -k --scripts oceanbase-diagnostic-tool-*.rpm
 
       - name: Find DEB
-        run: find / -name oceanbase-diagnostic-tool-*.rpm
+        run: find / -name oceanbase-diagnostic-tool*.deb
 
       - name: Upload DEB Artifact
         uses: actions/upload-artifact@v3
