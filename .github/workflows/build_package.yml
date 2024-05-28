@@ -86,11 +86,8 @@ jobs:
       - name: Convert RPM to DEB
         run: sudo alien -k --scripts oceanbase-diagnostic-tool-*.rpm
 
-      - name: Find DEB
-        run: sudo find / -name oceanbase-diagnostic-tool*.deb
-
       - name: Upload DEB Artifact
         uses: actions/upload-artifact@v3
         with:
           name: deb-package
-          path: /home/runner/work/obdiag/oceanbase-diagnostic-tool/oceanbase-diagnostic-tool_*.deb
+          path: /home/runner/work/obdiag/obdiag/oceanbase-diagnostic-tool_*.deb
