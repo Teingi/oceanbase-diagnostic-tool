@@ -72,10 +72,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Find rpm
-        run: |
-          find / -name oceanbase-diagnostic-tool-*.rpm
-
       - name: Download RPM Artifact
         uses: actions/download-artifact@v3
         with:
