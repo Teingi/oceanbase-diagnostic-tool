@@ -87,7 +87,7 @@ jobs:
         run: alien -k --scripts oceanbase-diagnostic-tool-*.rpm
 
       - name: Find DEB
-        run: alien -k --scripts oceanbase-diagnostic-tool-*.rpm
+        run: find / -name oceanbase-diagnostic-tool-*.rpm
 
       - name: Upload DEB Artifact
         uses: actions/upload-artifact@v3
