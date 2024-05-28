@@ -25,8 +25,6 @@ jobs:
           cd Python-3.8.18
           ./configure --enable-optimizations
           make altinstall
-          # find / -name libpython3.8.so.1.0
-          # cp /usr/local/python3/lib/libpython3.8.so.1.0 /usr/lib64
           python3.8 --version
           ln -sf /usr/local/bin/python3.8 /usr/local/bin/python3
 
@@ -50,10 +48,27 @@ jobs:
           cat ./rpm/oceanbase-diagnostic-tool.spec
           rpmbuild -bb ./rpm/oceanbase-diagnostic-tool.spec
 
-      - name: Convert RPM to DEB
-        run: |
-          mkdir -p /home/runner/artifacts
-          alien --scripts --to-deb /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
+      # - name: Convert RPM to DEB
+      #   run: |
+      #     mkdir -p /home/runner/artifacts
+      #     alien --scripts --to-deb /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
+
+      - name: Convert RPM to DEB in Debian-based Container
+        runs-on: ubuntu-22.04
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+          - name: Install Alien
+            run: |
+              sudo apt-get update
+              sudo apt-get install -y alien
+          - name: Copy RPM Package
+            run: cp /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm .
+          - name: Convert RPM to DEB
+            run: alien -k --scripts oceanbase-diagnostic-tool-*.rpm
+          - name: find deb
+            run: find / -name oceanbase-diagnostic-tool_*.deb
+
 
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v3
