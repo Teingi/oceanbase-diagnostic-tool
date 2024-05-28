@@ -23,7 +23,7 @@ jobs:
           wget https://www.python.org/ftp/python/3.8.18/Python-3.8.18.tgz
           tar xvf Python-3.8.18.tgz
           cd Python-3.8.18
-          ./configure --enable-optimizations
+          ./configure --enable-shared --enable-optimizations
           make altinstall
           python3.8 --version
           ln -sf /usr/local/bin/python3.8 /usr/local/bin/python3
@@ -58,7 +58,7 @@ jobs:
       - name: 'Upload rpm'
         uses: actions/upload-artifact@v3
         with:
-          name: obdiag-packages
+          name: obdiag-rpm-packages
           path: |
             /github/home/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
           retention-days: 3
@@ -75,7 +75,7 @@ jobs:
       - name: Download RPM Artifact
         uses: actions/download-artifact@v3
         with:
-          name: obdiag-packages
+          name: obdiag-rpm-packages
           path: .
 
       - name: Install Alien
@@ -89,5 +89,5 @@ jobs:
       - name: Upload DEB Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: deb-package
+          name: obdiag-deb-package
           path: /home/runner/work/obdiag/obdiag/oceanbase-diagnostic-tool_*.deb
