@@ -31,10 +31,12 @@ jobs:
       - name: Install dependencies
         run: |
           python3 --version
+          python3 -m pip install --upgrade pip
+          pip3 install -r requirements3.txt
 
       - name: Set up build env
         run: |
-          yum install gcc make perl-ExtUtils-MakeMaker
+          yum install gcc make
           yum install fakeroot
 
       - name: Build package
