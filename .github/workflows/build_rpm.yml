@@ -1,4 +1,4 @@
-name: build rpm
+name: Build RPM and Convert to DEB
 
 on:
   pull_request:
@@ -28,10 +28,13 @@ jobs:
           python3.8 --version
           ln -sf /usr/local/bin/python3.8 /usr/local/bin/python3
 
+      - name: Find and Copy LibPython
+        run: |
+          LIBPATH=$(find / -name libpython3.8.so.1.0)
+          cp "$LIBPATH" /usr/lib64/
+
       - name: Install python3-devel
         run: |
-          find / -name libpython3.8.so.1.0
-          cp /__t/Python/3.8.18/x64/lib/libpython3.8.so.1.0 /usr/lib64
           yum install -y python3-devel
 
       - name: Install dependencies
@@ -48,34 +51,57 @@ jobs:
           cat ./rpm/oceanbase-diagnostic-tool.spec
           rpmbuild -bb ./rpm/oceanbase-diagnostic-tool.spec
 
-      # - name: Convert RPM to DEB
-      #   run: |
-      #     mkdir -p /home/runner/artifacts
-      #     alien --scripts --to-deb /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
+  convert-to-deb:
+    needs: build-rpm
+    runs-on: ubuntu-22.04
 
-      - name: Convert RPM to DEB in Debian-based Container
-        runs-on: ubuntu-22.04
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v3
-          - name: Install Alien
-            run: |
-              sudo apt-get update
-              sudo apt-get install -y alien
-          - name: Copy RPM Package
-            run: cp /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm .
-          - name: Convert RPM to DEB
-            run: alien -k --scripts oceanbase-diagnostic-tool-*.rpm
-          - name: find deb
-            run: find / -name oceanbase-diagnostic-tool_*.deb
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      - name: Download RPM Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: rpm-package
+          path: .
 
-      - name: 'Upload Artifacts'
+      - name: Install Alien
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y alien
+
+      - name: Convert RPM to DEB
+        run: alien -k --scripts oceanbase-diagnostic-tool-*.rpm
+
+      - name: Upload DEB Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: obdiag-packages
-          path: |
-            /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
-            /home/runner/work/obdiag/obdiag/oceanbase-diagnostic-tool_*.deb
-          retention-days: 3
-          debug: true
+          name: deb-package
+          path: oceanbase-diagnostic-tool_*.deb
+
+      # - name: Convert RPM to DEB in Debian-based Container
+      #   runs-on: ubuntu-22.04
+      #   steps:
+      #     - name: Checkout code
+      #       uses: actions/checkout@v3
+      #     - name: Install Alien
+      #       run: |
+      #         sudo apt-get update
+      #         sudo apt-get install -y alien
+      #     - name: Copy RPM Package
+      #       run: cp /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm .
+      #     - name: Convert RPM to DEB
+      #       run: alien -k --scripts oceanbase-diagnostic-tool-*.rpm
+      #     - name: find deb
+      #       run: find / -name oceanbase-diagnostic-tool_*.deb
+
+
+      # - name: 'Upload Artifacts'
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: obdiag-packages
+      #     path: |
+      #       /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
+      #       /home/runner/work/obdiag/obdiag/oceanbase-diagnostic-tool_*.deb
+      #     retention-days: 3
+      #     debug: true
