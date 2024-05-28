@@ -68,8 +68,7 @@ class VerifyResult(object):
             self.stdio.verbose("the result verify is {0}".format(self.expr))
             real_shell = re.sub(r'\$\{([^}]+)\}', self.expr, check_verify_shell)
             for env in self.env_dict:
-                self.stdio.verbose("add env: {0} ,the value:{1} , the type:{2}".format(env, self.env_dict[env],
-                                                                                 type(self.env_dict[env])))
+                self.stdio.verbose("add env: {0} ,the value:{1} , the type:{2}".format(env, self.env_dict[env], type(self.env_dict[env])))
                 if isinstance(self.env_dict[env], int):
                     real_shell = env + '=' + str(self.env_dict[env]) + '\n' + real_shell
                 else:
@@ -87,56 +86,42 @@ class VerifyResult(object):
 
     def _verify_max(self):
         try:
-            if isinstance(self.env_dict[self.now_step_set_value_name], decimal.Decimal):
-                self.env_dict[self.now_step_set_value_name] = int(self.env_dict[self.now_step_set_value_name])
-            if not isinstance(self.env_dict[self.now_step_set_value_name], (int, float, decimal.Decimal)):
-                raise Exception(
-                    "{0} is {1} and the type is {2}, not int or float or decimal !".format(self.now_step_set_value_name,
-                                                                                           self.env_dict[
-                                                                                               self.now_step_set_value_name],
-                                                                                           type(self.env_dict[
-                                                                                                    self.now_step_set_value_name])))
+            the_num = self.env_dict[self.now_step_set_value_name]
+            if isinstance(the_num, decimal.Decimal):
+                the_num = int(self.env_dict[self.now_step_set_value_name])
+            if not isinstance(the_num, (int, float, decimal.Decimal)):
+                self.stdio.warn("{0} is {1} and the type is {2}, not int or float or decimal ! set it to 0.".format(self.now_step_set_value_name, self.env_dict[self.now_step_set_value_name], type(self.env_dict[self.now_step_set_value_name])))
+                the_num = 0
             range_str = self.expr
-            result = int(self.env_dict[self.now_step_set_value_name]) < int(range_str)
-            return result
+            return int(the_num) < int(range_str)
         except Exception as e:
             self.stdio.error("_verify_max error: {0} -> {1}".format(str(self.expr), e))
             raise VerifyFalseException(e)
 
     def _verify_min(self):
         try:
-            if isinstance(self.env_dict[self.now_step_set_value_name], decimal.Decimal):
-                self.env_dict[self.now_step_set_value_name] = int(self.env_dict[self.now_step_set_value_name])
-            if not isinstance(self.env_dict[self.now_step_set_value_name], (int, float, decimal.Decimal)):
-                raise Exception(
-                    "{0} is {1} and the type is {2}, not int or float ordecimal !".format(self.now_step_set_value_name,
-                                                                                          self.env_dict[
-                                                                                              self.now_step_set_value_name],
-                                                                                          type(self.env_dict[
-                                                                                                   self.now_step_set_value_name])))
+            the_num = self.env_dict[self.now_step_set_value_name]
+            if isinstance(the_num, decimal.Decimal):
+                the_num = int(self.env_dict[self.now_step_set_value_name])
+            if not isinstance(the_num, (int, float, decimal.Decimal)):
+                self.stdio.warn("{0} is {1} and the type is {2}, not int or float or decimal ! set it to 0.".format(self.now_step_set_value_name, self.env_dict[self.now_step_set_value_name], type(self.env_dict[self.now_step_set_value_name])))
+                the_num = 0
             range_str = self.expr
-            result = int(self.env_dict[self.now_step_set_value_name]) > int(range_str)
-            return result
+            return int(the_num) > int(range_str)
         except Exception as e:
             self.stdio.error("_verify_min error: {0} -> {1}".format(str(self.expr), e))
             raise VerifyFalseException(e)
 
     def _verify_equal(self):
         try:
-            if isinstance(self.env_dict[self.now_step_set_value_name], decimal.Decimal):
-                self.env_dict[self.now_step_set_value_name] = int(self.env_dict[self.now_step_set_value_name])
-            if not isinstance(self.env_dict[self.now_step_set_value_name], (int, float, decimal.Decimal)):
-                raise Exception(
-                    "{0} is {1} and the type is {2}, not int or float or decimal !".format(self.now_step_set_value_name,
-                                                                                           self.env_dict[
-                                                                                               self.now_step_set_value_name],
-                                                                                           type(self.env_dict[
-                                                                                                    self.now_step_set_value_name])))
-            result = False
+            the_num = self.env_dict[self.now_step_set_value_name]
+            if isinstance(the_num, decimal.Decimal):
+                the_num = int(self.env_dict[self.now_step_set_value_name])
+            if not isinstance(the_num, (int, float, decimal.Decimal)):
+                self.stdio.warn("{0} is {1} and the type is {2}, not int or float or decimal ! set it to 0.".format(self.now_step_set_value_name, self.env_dict[self.now_step_set_value_name], type(self.env_dict[self.now_step_set_value_name])))
+                the_num = 0
             range_str = self.expr
-            if int(self.env_dict[self.now_step_set_value_name]) == int(range_str):
-                result = True
+            return int(self.env_dict[self.now_step_set_value_name]) == int(range_str)
         except Exception as e:
             self.stdio.error("_verify_equal error: {0} -> {1}".format(str(self.expr), e))
             raise VerifyFailException(e)
-        return result
