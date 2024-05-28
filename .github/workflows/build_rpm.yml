@@ -23,9 +23,10 @@ jobs:
           wget https://www.python.org/ftp/python/3.8.18/Python-3.8.18.tgz
           tar xvf Python-3.8.18.tgz
           cd Python-3.8.18
-          ./configure --enable-shared
+          ./configure --enable-shared --enable-optimizations
           make altinstall
           find / -name libpython3.8.so.1.0
+          cp /usr/local/python3/lib/libpython3.8.so.1.0 /usr/lib64
           python3.8 --version
           ln -sf /usr/local/bin/python3.8 /usr/local/bin/python3
 
