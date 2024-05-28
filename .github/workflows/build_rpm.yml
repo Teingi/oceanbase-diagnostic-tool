@@ -19,7 +19,7 @@ jobs:
 
       - name: Set up Python (From Source)
         run: |
-          yum install -y gcc make openssl-devel zlib-devel bzip2-devel libffi-devel
+          yum install -y gcc make openssl-devel zlib-devel bzip2-devel libffi-devel wget
           wget https://www.python.org/ftp/python/3.8.18/Python-3.8.18.tgz
           tar xvf Python-3.8.18.tgz
           cd Python-3.8.18
