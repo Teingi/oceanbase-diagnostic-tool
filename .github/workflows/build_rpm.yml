@@ -17,10 +17,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.8'
+      - name: Set up Python (From Source)
+        run: |
+          yum install -y gcc make openssl-devel zlib-devel bzip2-devel libffi-devel
+          wget https://www.python.org/ftp/python/3.8.18/Python-3.8.18.tgz
+          tar xvf Python-3.8.18.tgz
+          cd Python-3.8.18
+          ./configure --enable-optimizations
+          make altinstall
+          python3.8 --version
 
       - name: Install dependencies
         run: |
