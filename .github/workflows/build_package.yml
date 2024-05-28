@@ -75,7 +75,7 @@ jobs:
       - name: Download RPM Artifact
         uses: actions/download-artifact@v3
         with:
-          name: rpm-package
+          name: obdiag-packages
           path: .
 
       - name: Install Alien
