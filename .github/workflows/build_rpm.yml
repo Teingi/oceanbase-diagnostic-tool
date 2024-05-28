@@ -34,7 +34,7 @@ jobs:
         run: |
           find / -name libpython3.8.so.1.0
           cp /__t/Python/3.8.18/x64/lib/libpython3.8.so.1.0 /usr/lib64
-          yum install python3-devel
+          yum install -y python3-devel
 
       - name: Install dependencies
         run: |
