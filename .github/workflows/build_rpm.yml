@@ -25,6 +25,7 @@ jobs:
           cd Python-3.8.18
           ./configure --enable-shared
           make altinstall
+          find / -name libpython3.8.so.1.0
           python3.8 --version
           ln -sf /usr/local/bin/python3.8 /usr/local/bin/python3
 
