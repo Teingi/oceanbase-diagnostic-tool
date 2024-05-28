@@ -72,6 +72,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Find rpm
+        run: |
+          find / -name oceanbase-diagnostic-tool-*.rpm
+
       - name: Download RPM Artifact
         uses: actions/download-artifact@v3
         with:
@@ -82,10 +86,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y alien
-
-      - name: Find rpm
-        run: |
-          find / -name oceanbase-diagnostic-tool-*.rpm
 
       - name: Convert RPM to DEB
         run: alien -k --scripts oceanbase-diagnostic-tool-*.rpm
