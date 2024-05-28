@@ -84,7 +84,7 @@ jobs:
           sudo apt-get install -y alien
 
       - name: Convert RPM to DEB
-        run: alien -k --scripts oceanbase-diagnostic-tool-*.rpm
+        run: sudo alien -k --scripts oceanbase-diagnostic-tool-*.rpm
 
       - name: Find DEB
         run: find / -name oceanbase-diagnostic-tool*.deb
