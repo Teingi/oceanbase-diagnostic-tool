@@ -87,7 +87,7 @@ jobs:
         run: sudo alien -k --scripts oceanbase-diagnostic-tool-*.rpm
 
       - name: Find DEB
-        run: find / -name oceanbase-diagnostic-tool*.deb
+        run: sudo find / -name oceanbase-diagnostic-tool*.deb
 
       - name: Upload DEB Artifact
         uses: actions/upload-artifact@v3
