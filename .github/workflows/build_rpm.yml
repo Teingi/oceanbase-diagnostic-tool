@@ -37,7 +37,7 @@ jobs:
           pwd
           ls -lh
           export RELEASE=`date +%Y%m%d%H%M`
-          sed -i '/^pip install -r requirements3.txt$/ \
+          sed -i '/^pip install -r requirements3.txt$ \
           source /etc/profile.d/python38.sh\
           curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py\
           python3 get-pip.py\
