@@ -38,6 +38,7 @@ jobs:
           ls -lh
           export RELEASE=`date +%Y%m%d%H%M`
           cat ./rpm/oceanbase-diagnostic-tool.spec
+          sed -i 's/pip install -r requirements3.txt/pip3 install -r requirements3.txt/g' oceanbase-diagnostic-tool.spec
           rpmbuild -bb ./rpm/oceanbase-diagnostic-tool.spec
 
       - name: Find rpm
