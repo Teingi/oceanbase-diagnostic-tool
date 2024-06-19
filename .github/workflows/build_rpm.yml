@@ -9,7 +9,7 @@ on:
       - "*"
 
 jobs:
-  build-and-package-x86_64:
+  build-rpm:
     name: Run on CentOS 7
     runs-on: ubuntu-latest
     container:
