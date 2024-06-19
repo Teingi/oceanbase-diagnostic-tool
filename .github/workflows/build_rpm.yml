@@ -6,7 +6,7 @@ on:
       - master
   push:
     branches:
-      - master
+      - "*"
 
 jobs:
   build-and-package-x86_64:
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.8'
+          python-version: "3.8"
 
       - name: Install dependencies
         run: |
@@ -43,12 +43,12 @@ jobs:
           mkdir -p /home/runner/artifacts
           fakeroot alien --scripts --to-deb /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
 
-      - name: 'Upload Artifacts'
+      - name: "Upload Artifacts"
         uses: actions/upload-artifact@v3
         with:
           name: obdiag-packages
           path: |
             /home/runner/rpmbuild/RPMS/x86_64/oceanbase-diagnostic-tool-*.rpm
-            /home/runner/work/oceanbase-diagnostic-tool/oceanbase-diagnostic-tool/oceanbase-diagnostic-tool_*.deb
+            /home/runner/work/obdiag/obdiag/oceanbase-diagnostic-tool_*.deb
           retention-days: 3
           debug: true
