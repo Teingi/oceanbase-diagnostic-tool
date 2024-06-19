@@ -40,6 +40,7 @@ jobs:
           sed -i 's/pip install -r requirements3.txt/pip3 install -r requirements3.txt/g' ./rpm/oceanbase-diagnostic-tool.spec
           cat ./rpm/oceanbase-diagnostic-tool.spec
           source /etc/profile.d/python38.sh
+          python3 -m pip install --upgrade pip setuptools wheel
           cat /etc/profile.d/python38.sh
           python3 --version
           rpmbuild -bb ./rpm/oceanbase-diagnostic-tool.spec
