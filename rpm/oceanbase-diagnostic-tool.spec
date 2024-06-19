@@ -26,6 +26,8 @@ VERSION="$RPM_PACKAGE_VERSION"
 cd $SRC_DIR
 pwd
 source /etc/profile.d/python38.sh
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
 pip install -r requirements3.txt
 cp -f main.py obdiag.py
 sed -i  "s/<B_TIME>/$DATE/" ./common/version.py  && sed -i "s/<VERSION>/$VERSION/" ./common/version.py
