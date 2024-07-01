@@ -1,0 +1,48 @@
+name: Check Python File Headers
+
+on:
+  push:
+    branches: '*'
+  pull_request:
+    branches: '*'
+
+jobs:
+  check-headers:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Install Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Check File Headers
+      run: |
+        EXPECTED_HEADER=$(cat << EOF
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+# Copyright (c) 2022 OceanBase
+# OceanBase Diagnostic Tool is licensed under Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#          http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# See the Mulan PSL v2 for more details.
+EOF
+)
+        echo "import os" > check_headers.py
+        echo "import filecmp" >> check_headers.py
+        echo "EXPECTED_HEADER = '''$EXPECTED_HEADER'''[:-1]" >> check_headers.py
+        echo "for root, dirs, files in os.walk('.'):
+        echo "    for file in files:" >> check_headers.py
+        echo "        if file.endswith('.py'):" >> check_headers.py
+        echo "            with open(os.path.join(root, file), 'r') as f:" >> check_headers.py
+        echo "                header = f.readlines()[:len(EXPECTED_HEADER.splitlines())]" >> check_headers.py
+        echo "                if header != EXPECTED_HEADER.splitlines():" >> check_headers.py
+        echo "                    print(f'Header mismatch in {os.path.join(root, file)}')" >> check_headers.py
+        echo "                    exit(1)" >> check_headers.py
+        python check_headers.py
